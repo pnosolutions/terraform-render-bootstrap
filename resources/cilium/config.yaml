@@ -32,11 +32,11 @@ data:
 
   # Enable IPv4 addressing. If enabled, all endpoints are allocated an IPv4
   # address.
-  enable-ipv4: "true"
+  enable-ipv4: "${enable_ipv4}"
 
   # Enable IPv6 addressing. If enabled, all endpoints are allocated an IPv6
   # address.
-  enable-ipv6: "false"
+  enable-ipv6: "${enable_ipv6}"
 
   # Enable probing for a more efficient clock source for the BPF datapath
   enable-bpf-clock-probe: "true"
@@ -121,7 +121,7 @@ data:
 
   # masquerade traffic leaving the node destined for outside
   enable-ipv4-masquerade: "true"
-  enable-ipv6-masquerade: "false"
+  enable-ipv6-masquerade: "true"
 
   # bpfMasquerade enables masquerading with BPF instead of iptables
   enable-bpf-masquerade: "true"
@@ -149,8 +149,10 @@ data:
   # IPAM
   ipam: "cluster-pool"
   disable-cnp-status-updates: "true"
-  cluster-pool-ipv4-cidr: "${pod_cidr}"
+  cluster-pool-ipv4-cidr: "${pod_cidr_v4}"
   cluster-pool-ipv4-mask-size: "24"
+  cluster-pool-ipv6-cidr: "${pod_cidr_v6}"
+  cluster-pool-ipv6-mask-size: "112"
 
   # Health
   agent-health-port: "9876"

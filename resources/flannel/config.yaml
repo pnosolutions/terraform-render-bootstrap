@@ -29,7 +29,10 @@ data:
     }
   net-conf.json: |
     {
-      "Network": "${pod_cidr}",
+      "EnableIPv4": ${enable_ipv4},
+      "Network": "${pod_cidr_v4}",
+      "EnableIPv6": ${enable_ipv6},
+      "IPv6Network": "${pod_cidr_v6}",
       "Backend": {
         "Type": "vxlan",
         "Port": 8472

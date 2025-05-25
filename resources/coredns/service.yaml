@@ -12,7 +12,12 @@ metadata:
 spec:
   selector:
     k8s-app: coredns
-  clusterIP: ${cluster_dns_service_ip}
+  ipFamilyPolicy: PreferDualStack
+  clusterIP: ${cluster_dns_service_ips[0]}
+  clusterIPs:
+    %{~ for ip in cluster_dns_service_ips ~}
+    - ${ip}
+    %{~ endfor ~}
   ports:
     - name: dns
       port: 53

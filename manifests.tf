@@ -10,9 +10,11 @@ locals {
         kube_controller_manager_image = var.container_images["kube_controller_manager"]
         kube_scheduler_image          = var.container_images["kube_scheduler"]
 
-        etcd_servers = join(",", formatlist("https://%s:2379", var.etcd_servers))
-        pod_cidr     = var.pod_cidr
-        service_cidr = var.service_cidr
+        etcd_servers    = join(",", formatlist("https://%s:2379", var.etcd_servers))
+        pod_cidr_v4     = var.pod_cidr
+        pod_cidr_v6     = var.pod_cidr_v6
+        service_cidr_v4 = var.service_cidr
+        service_cidr_v6 = var.service_cidr_v6
 
         service_account_issuer = var.service_account_issuer
         aggregation_flags      = var.enable_aggregation ? indent(4, local.aggregation_flags) : ""
@@ -44,7 +46,10 @@ locals {
           coredns_image          = var.container_images["coredns"]
           control_plane_replicas = max(2, length(var.etcd_servers))
           cluster_domain_suffix  = var.cluster_domain_suffix
-          cluster_dns_service_ip = cidrhost(var.service_cidr, 10)
+          cluster_dns_service_ips = compact([
+            var.service_cidr != "" ? cidrhost(var.service_cidr, 10) : null,
+            var.service_cidr_v6 != "" ? cidrhost(var.service_cidr_v6, 10) : null
+          ])
         }
       ) if var.components.enable && var.components.coredns.enable
     },
@@ -55,7 +60,7 @@ locals {
         "${path.module}/resources/kube-proxy/${name}",
         {
           kube_proxy_image      = var.container_images["kube_proxy"]
-          pod_cidr              = var.pod_cidr
+          pod_cidr              = join(",", compact([var.pod_cidr, var.pod_cidr_v6]))
           daemonset_tolerations = var.daemonset_tolerations
         }
       ) if var.components.enable && var.components.kube_proxy.enable && var.networking != "cilium"

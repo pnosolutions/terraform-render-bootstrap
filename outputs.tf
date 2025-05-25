@@ -1,6 +1,10 @@
 
 output "cluster_dns_service_ip" {
-  value = cidrhost(var.service_cidr, 10)
+  value = try(cidrhost(var.service_cidr, 10), null)
+}
+
+output "cluster_dns_service_ipv6" {
+  value = try(cidrhost(var.service_cidr_v6, 10), null)
 }
 
 // Generated kubeconfig for Kubelets (i.e. lower privilege than admin)

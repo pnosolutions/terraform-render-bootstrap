@@ -10,7 +10,10 @@ locals {
       {
         flannel_image         = var.container_images["flannel"]
         flannel_cni_image     = var.container_images["flannel_cni"]
-        pod_cidr              = var.pod_cidr
+        enable_ipv4           = var.pod_cidr != "" ? "true" : "false"
+        enable_ipv6           = var.pod_cidr_v6 != "" ? "true" : "false"
+        pod_cidr_v4           = var.pod_cidr
+        pod_cidr_v6           = var.pod_cidr_v6
         daemonset_tolerations = var.daemonset_tolerations
       }
     )
@@ -26,7 +29,10 @@ locals {
       {
         cilium_agent_image    = var.container_images["cilium_agent"]
         cilium_operator_image = var.container_images["cilium_operator"]
-        pod_cidr              = var.pod_cidr
+        enable_ipv4           = var.pod_cidr != "" ? "true" : "false"
+        enable_ipv6           = var.pod_cidr_v6 != "" ? "true" : "false"
+        pod_cidr_v4           = var.pod_cidr
+        pod_cidr_v6           = var.pod_cidr_v6
         daemonset_tolerations = var.daemonset_tolerations
       }
     )
