@@ -41,7 +41,7 @@ spec:
         image: ${kube_proxy_image}
         command:
         - kube-proxy
-        - --cluster-cidr=${join(",", compact([pod_cidr_v4, pod_cidr_v6]))}
+        - --cluster-cidr=${pod_cidr}
         - --hostname-override=$(NODE_NAME)
         - --kubeconfig=/etc/kubernetes/kubeconfig
         - --metrics-bind-address=0.0.0.0
