@@ -23,7 +23,7 @@ spec:
     - --authorization-kubeconfig=/etc/kubernetes/pki/controller-manager.conf
     - --allocate-node-cidrs=true
     - --client-ca-file=/etc/kubernetes/pki/ca.crt
-    - --cluster-cidr=${pod_cidr}
+    - --cluster-cidr=${join(",", compact([pod_cidr_v4, pod_cidr_v6]))}
     - --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt
     - --cluster-signing-key-file=/etc/kubernetes/pki/ca.key
     - --cluster-signing-duration=72h
@@ -33,7 +33,7 @@ spec:
     - --leader-elect=true
     - --root-ca-file=/etc/kubernetes/pki/ca.crt
     - --service-account-private-key-file=/etc/kubernetes/pki/service-account.key
-    - --service-cluster-ip-range=${service_cidr}
+    - --service-cluster-ip-range=${join(",", compact([service_cidr_v4,service_cidr_v6]))}
     - --use-service-account-credentials=true
     livenessProbe:
       httpGet:
