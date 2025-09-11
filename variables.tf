@@ -27,17 +27,56 @@ variable "networking" {
 
 variable "pod_cidr" {
   type        = string
-  description = "CIDR IP range to assign Kubernetes pods"
+  description = "CIDR IPv4 range to assign Kubernetes pods"
   default     = "10.20.0.0/14"
+  nullable    = false
+
+  validation {
+    condition     = var.pod_cidr == "" || can(cidrnetmask(var.pod_cidr))
+    error_message = "The pod CIDR is not a valid IPv4 prefix"
+  }
+}
+
+variable "pod_cidr_v6" {
+  type        = string
+  description = "CIDR IPv6 range to assign Kubernetes pods"
+  default     = "fd00:b0d::/56"
+  nullable    = false
+
+  validation {
+    condition     = var.pod_cidr_v6 == "" || can(strcontains(cidrsubnet(var.pod_cidr_v6, 0, 0), ":"))
+    error_message = "The pod CIDR is not a valid IPv6 prefix"
+  }
 }
 
 variable "service_cidr" {
   type        = string
   description = <<EOD
-CIDR IP range to assign Kubernetes services.
+CIDR IPv4 range to assign Kubernetes services.
 The 1st IP will be reserved for kube_apiserver, the 10th IP will be reserved for kube-dns.
 EOD
   default     = "10.3.0.0/24"
+  nullable    = false
+
+  validation {
+    condition     = var.service_cidr == "" || can(cidrnetmask(var.service_cidr))
+    error_message = "The service CIDR is not a valid IPv4 prefix"
+  }
+}
+
+variable "service_cidr_v6" {
+  type        = string
+  description = <<EOD
+CIDR IPv6 range to assign Kubernetes services.
+The 1st IP will be reserved for kube_apiserver, the 10th IP will be reserved for kube-dns.
+EOD
+  default     = "fd00:c00b::/108"
+  nullable    = false
+
+  validation {
+    condition     = var.service_cidr_v6 == "" || can(strcontains(cidrsubnet(var.service_cidr_v6, 0, 0), ":"))
+    error_message = "The service CIDR is not a valid IPv6 prefix"
+  }
 }
 
 variable "container_images" {
